@@ -43,7 +43,7 @@ namespace DailyDscovrConsoleApp
                 Console.Error.WriteLine(ex);
             }
 
-
+            Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
 
@@ -74,8 +74,7 @@ namespace DailyDscovrConsoleApp
         {
             return Wallpaper.Set(wallpaper, Wallpaper.Style.Centered);
         }
-
-        // TODO cyclomatic complexity!
+        
         public static Uri GetLatestImageUri(double longitude)
         {
             if (longitude > 180 || longitude < -180)
@@ -99,10 +98,13 @@ namespace DailyDscovrConsoleApp
                     throw new Exception("No Images found");
 
                 // inefficient but shrug. Shouldn't be a big array to deal with
-                var nearestImage = images.OrderBy(image => Math.Abs(image.coordinates.centroid_coordinates.lon - longitude))
-                                         .ThenBy(image => image.date).First();
+                var latestImage = images.OrderBy(image => image.date)
+                                         .ThenBy(image => Math.Abs(image.coordinates.centroid_coordinates.lon - longitude)).First();
 
-                return new Uri($"{_dscovrImages}{nearestImage.image}.png", UriKind.Absolute);
+                // no idea what the time zone is... The website does not specify :/
+                Console.WriteLine($"Latest image was taken at {latestImage.date}, aimed at {latestImage.coordinates.centroid_coordinates}");
+
+                return new Uri($"{_dscovrImages}{latestImage.image}.png", UriKind.Absolute);
             }
         }
 

@@ -29,6 +29,11 @@ namespace DailyDscovrConsoleApp
         public double lat { get; set; }
         [DataMember]
         public double lon { get; set; }
+
+        public override string ToString()
+        {
+            return $"lat: {lat}, lon: {lon}";
+        }
     }
 
 
