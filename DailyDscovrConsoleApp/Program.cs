@@ -49,7 +49,6 @@ namespace DailyDscovrConsoleApp
 
         public static GeoCoordinate GetLocation()
         {
-            // todo this only works in .NET 4 :(
             using (var watcher = new GeoCoordinateWatcher())
             {
                 watcher.TryStart(false, TimeSpan.FromMilliseconds(5000));
@@ -67,7 +66,6 @@ namespace DailyDscovrConsoleApp
                 if (!coord.IsUnknown) return coord;
                 // todo Could fall back to a web service
                 Console.WriteLine("Could not acquire location");
-                //return new GeoCoordinate() { Latitude = -41, Longitude = 171 };
                 throw new Exception("Failed to acquire location...");
             }
         }
