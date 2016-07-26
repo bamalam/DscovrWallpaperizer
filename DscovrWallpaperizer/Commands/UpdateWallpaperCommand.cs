@@ -1,19 +1,33 @@
-﻿using System;
-using System.Linq;
-using System.Device.Location;
-using System.Net.Http;
-using System.Drawing;
-using System.Threading;
-using System.Collections.Generic;
+﻿using ManyConsole;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Device.Location;
+using System.Drawing;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using Utilities.DailyDscovrConsoleApp;
 
-namespace DailyDscovrConsoleApp
+namespace DailyDscovrConsoleApp.Commands
 {
-    internal class Program
+    public class UpdateWallpaperCommand : ConsoleCommand
     {
         const string _dscovrApi = "http://epic.gsfc.nasa.gov/api/images.php";
         const string _dscovrImages = "http://epic.gsfc.nasa.gov/epic-archive/png/";
-        private static void Main(string[] args)
+        public UpdateWallpaperCommand()
+        {
+            // Register the actual command with a simple (optional) description.
+            IsCommand("UpdateWallpaper", "Updates the wallpaper to the latest DSCOVR image");
+
+            // Add a longer description for the help on that specific command.
+            HasLongDescription("This command sets the users wallpaper to be the latest image from the DSCOVR " +
+            "satalite, that has the users current location in view. The location is determined via Windows Location Services.");
+
+            // todo Optional location override
+        }
+
+        public override int Run(string[] remainingArguments)
         {
             try
             {
@@ -37,22 +51,21 @@ namespace DailyDscovrConsoleApp
                 {
                     Console.WriteLine("Setting Wallpaper failed");
                 }
+                return 1;
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine(ex);
+                return -1;
             }
-
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey();
         }
 
         public static GeoCoordinate GetLocation()
         {
             using (var watcher = new GeoCoordinateWatcher())
             {
-                watcher.TryStart(false, TimeSpan.FromMilliseconds(5000));
-                
+                watcher.TryStart(false, TimeSpan.FromMilliseconds(10000));
+
                 var coord = watcher.Position.Location;
 
                 if (!coord.IsUnknown) return coord;
@@ -74,7 +87,7 @@ namespace DailyDscovrConsoleApp
         {
             return Wallpaper.Set(wallpaper, Wallpaper.Style.Centered);
         }
-        
+
         public static Uri GetLatestImageUri(double longitude)
         {
             if (longitude > 180 || longitude < -180)
