@@ -112,10 +112,10 @@ namespace DailyDscovrConsoleApp.Commands
 
                 // inefficient but shrug. Shouldn't be a big array to deal with
                 var latestImage = images.OrderBy(image => image.date)
-                                         .ThenBy(image => Math.Abs(image.coordinates.centroid_coordinates.lon - longitude)).First();
+                                         .ThenBy(image => Math.Abs(image.centroid_coordinates.lon - longitude)).First();
 
                 // no idea what the time zone is... The website does not specify :/
-                Console.WriteLine($"Latest image was taken at {latestImage.date}, aimed at {latestImage.coordinates.centroid_coordinates}");
+                Console.WriteLine($"Latest image was taken at {latestImage.date}, aimed at {latestImage.centroid_coordinates}");
 
                 return new Uri($"{_dscovrImages}{latestImage.image}.png", UriKind.Absolute);
             }

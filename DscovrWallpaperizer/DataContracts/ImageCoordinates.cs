@@ -60,4 +60,6 @@ namespace DailyDscovrConsoleApp
         [DataMember]
         public double q3 { get; set; }
     }
+
+
 }
